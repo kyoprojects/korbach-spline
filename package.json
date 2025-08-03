@@ -1,8 +1,8 @@
 {
   "name": "@kyoprojects/korbach-spline",
   "version": "1.0.0",
+  "type": "module",
   "description": "Spline scene renderer for Korbach wheel configurator",
-  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
