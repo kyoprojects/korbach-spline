@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 
 function App() {
   console.log('App rendering');
+  // Initialize all refs with proper values
   const splineRef = useRef<Application | null>(null);
   const modelRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const currentRotation = useRef({ x: 0, z: 0 });
-  const targetRotation = useRef({ x: 0, z: 0 });
-  const animationRef = useRef<number>();
+  const currentRotation = useRef<{ x: number; z: number }>({ x: 0, z: 0 });
+  const targetRotation = useRef<{ x: number; z: number }>({ x: 0, z: 0 });
+  const animationRef = useRef<number | undefined>(undefined);
   const [sceneUrl, setSceneUrl] = useState<string | null>(null);
 
   const lerp = (start: number, end: number, factor: number) => {
