@@ -1,16 +1,26 @@
 {
-  "name": "korbach-spline",
+  "name": "@kyoprojects/korbach-spline",
   "version": "1.0.0",
-  "description": "",
+  "description": "Spline scene renderer for Korbach wheel configurator",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "spline",
+    "3d",
+    "wheel",
+    "configurator",
+    "korbach"
+  ],
+  "author": "Kyo Projects",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyoprojects/korbach-spline.git"
+  },
   "dependencies": {
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^1.10.39",

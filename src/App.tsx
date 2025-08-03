@@ -1,6 +1,6 @@
 import Spline from '@splinetool/react-spline';
 import { Application } from '@splinetool/runtime';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function App() {
   console.log('App rendering');
@@ -10,12 +10,12 @@ function App() {
   const currentRotation = useRef({ x: 0, z: 0 });
   const targetRotation = useRef({ x: 0, z: 0 });
   const animationRef = useRef<number>();
+  const [sceneUrl, setSceneUrl] = useState<string | null>(null);
 
   const lerp = (start: number, end: number, factor: number) => {
     return start + (end - start) * factor;
   };
 
-  // Shared function to update rotation based on normalized coordinates
   const updateRotation = (normalizedX: number, normalizedY: number) => {
     if (!modelRef.current) return;
 
@@ -26,7 +26,6 @@ function App() {
 
   const animate = () => {
     if (modelRef.current?.rotation) {
-      // Smooth interpolation
       currentRotation.current.x = lerp(currentRotation.current.x, targetRotation.current.x, 0.1);
       currentRotation.current.z = lerp(currentRotation.current.z, targetRotation.current.z, 0.1);
 
@@ -63,10 +62,24 @@ function App() {
 
     // Parent window message handler
     const handleParentMessage = (event: MessageEvent) => {
+      console.log('Received message:', event.data);
+
       if (event.data.type === 'MOUSE_MOVE') {
-        console.log('Received message:', event.data);
         const { normalizedX, normalizedY } = event.data;
         updateRotation(normalizedX, normalizedY);
+      }
+
+      // Handle scene change message
+      if (event.data.type === 'CHANGE_SCENE') {
+        const newSceneUrl = event.data.url.trim();
+        console.log('Changing scene to:', newSceneUrl);
+
+        // Reset rotation and refs before changing scene
+        targetRotation.current = { x: 0, z: 0 };
+        currentRotation.current = { x: 0, z: 0 };
+        modelRef.current = null;
+
+        setSceneUrl(newSceneUrl);
       }
     };
 
@@ -98,7 +111,7 @@ function App() {
         background: 'transparent',
         pointerEvents: 'none'
       }}>
-      <Spline scene='https://prod.spline.design/yo0l2LhOg8LfCHGm/scene.splinecode' onLoad={onLoad} />
+      {sceneUrl && <Spline scene={sceneUrl} onLoad={onLoad} />}
     </div>
   );
 }
