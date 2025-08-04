@@ -7,17 +7,14 @@ function App() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'CHANGE_SCENE') {
-        console.log('Scene change requested:', event.data.url);
         setSceneUrl(event.data.url.trim());
       }
     };
 
-    console.log('App: Setting up message listener');
     window.addEventListener('message', handleMessage);
     window.parent.postMessage({ type: 'IFRAME_INIT' }, '*');
 
     return () => {
-      console.log('App: Cleaning up message listener');
       window.removeEventListener('message', handleMessage);
     };
   }, []);

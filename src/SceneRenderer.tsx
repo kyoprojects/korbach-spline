@@ -7,8 +7,6 @@ interface SceneRendererProps {
 }
 
 function SceneRenderer({ sceneUrl }: SceneRendererProps) {
-  console.log('SceneRenderer mounted for:', sceneUrl);
-
   const state = useRef({
     model: null as any,
     animation: null as number | null,
@@ -32,34 +30,24 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
   };
 
   const startAnimation = () => {
-    console.log('Starting animation');
-
     const animate = () => {
       const { model, rotation } = state.current;
 
-      if (!model?.rotation) {
-        console.log('No model in animation frame');
-        return;
-      }
+      if (!model?.rotation) return;
 
-      // Update rotation values
       rotation.current.x = lerp(rotation.current.x, rotation.target.x, 0.1);
       rotation.current.z = lerp(rotation.current.z, rotation.target.z, 0.1);
 
-      // Apply to model
       model.rotation.x = rotation.current.x * (Math.PI / 180);
       model.rotation.z = rotation.current.z * (Math.PI / 180);
 
-      // Request next frame
       state.current.animation = requestAnimationFrame(animate);
     };
 
-    // Start the animation loop
     animate();
   };
 
   const stopAnimation = () => {
-    console.log('Stopping animation');
     if (state.current.animation) {
       cancelAnimationFrame(state.current.animation);
       state.current.animation = null;
@@ -67,22 +55,12 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
   };
 
   const onLoad = (splineApp: Application) => {
-    console.log('Scene loaded, searching for model...');
-
-    // Find and store model
     const model = splineApp.findObjectByName('Group');
-    console.log('Found model:', model);
+    if (!model) return;
 
-    if (!model) {
-      console.error('Could not find Group in scene');
-      return;
-    }
-
-    // Store model and start animation
     state.current.model = model;
     startAnimation();
 
-    // Tell parent we're ready
     window.parent.postMessage({ type: 'WHEEL_IFRAME_READY' }, '*');
   };
 
@@ -100,12 +78,10 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
       }
     };
 
-    console.log('SceneRenderer: Setting up event listeners');
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('message', handleMessage);
 
     return () => {
-      console.log('SceneRenderer: Cleaning up');
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('message', handleMessage);
       stopAnimation();
