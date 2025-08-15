@@ -11,8 +11,8 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
     model: null as any,
     animation: null as number | null,
     rotation: {
-      current: { x: 0, z: 0 },
-      target: { x: 0, z: 0 }
+      current: { x: 0, y: 0 },
+      target: { x: 0, y: 0 }
     }
   });
 
@@ -24,8 +24,8 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
     if (!state.current.model) return;
 
     state.current.rotation.target = {
-      z: -(normalizedX - 0.5) * 40,
-      x: (normalizedY - 0.5) * 40
+      y: -(normalizedX - 0.5) * 40, // Mouse X controls Y rotation (tilt left/right)
+      x: (normalizedY - 0.5) * 40 // Mouse Y controls X rotation (tilt forward/back)
     };
   };
 
@@ -36,10 +36,10 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
       if (!model?.rotation) return;
 
       rotation.current.x = lerp(rotation.current.x, rotation.target.x, 0.1);
-      rotation.current.z = lerp(rotation.current.z, rotation.target.z, 0.1);
+      rotation.current.y = lerp(rotation.current.y, rotation.target.y, 0.1);
 
       model.rotation.x = rotation.current.x * (Math.PI / 180);
-      model.rotation.z = rotation.current.z * (Math.PI / 180);
+      model.rotation.y = rotation.current.y * (Math.PI / 180);
 
       state.current.animation = requestAnimationFrame(animate);
     };
@@ -89,8 +89,8 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
         model: null,
         animation: null,
         rotation: {
-          current: { x: 0, z: 0 },
-          target: { x: 0, z: 0 }
+          current: { x: 0, y: 0 },
+          target: { x: 0, y: 0 }
         }
       };
     };
