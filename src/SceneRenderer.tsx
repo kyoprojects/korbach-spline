@@ -24,7 +24,7 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
     if (!state.current.model) return;
 
     state.current.rotation.target = {
-      y: -(normalizedX - 0.5) * 40, // Mouse X controls Y rotation (tilt left/right)
+      y: (normalizedX - 0.5) * 40, // Removed negative sign to reverse direction
       x: (normalizedY - 0.5) * 40 // Mouse Y controls X rotation (tilt forward/back)
     };
   };
@@ -59,6 +59,10 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
     if (!model) return;
 
     state.current.model = model;
+
+    // Initialize mouse position to center on load
+    updateRotation(0.5, 0.5);
+
     startAnimation();
 
     window.parent.postMessage({ type: 'WHEEL_IFRAME_READY' }, '*');
