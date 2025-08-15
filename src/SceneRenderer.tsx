@@ -55,7 +55,7 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
   };
 
   const onLoad = (splineApp: Application) => {
-    const model = splineApp.findObjectByName('Group');
+    const model = splineApp.findObjectByName('wheel');
     if (!model) return;
 
     state.current.model = model;
