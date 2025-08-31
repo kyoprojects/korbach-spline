@@ -1,14 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Spline from '@splinetool/react-spline';
 import { Application } from '@splinetool/runtime';
 
 interface SceneRendererProps {
   sceneUrl: string;
+  onSceneReady?: () => void;
 }
 
-function SceneRenderer({ sceneUrl }: SceneRendererProps) {
+function SceneRenderer({ sceneUrl, onSceneReady }: SceneRendererProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
   const state = useRef({
     model: null as any,
+    application: null as Application | null,
     animation: null as number | null,
     rotation: {
       current: { x: 0, y: 0 },
@@ -55,9 +58,16 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
   };
 
   const onLoad = (splineApp: Application) => {
-    const model = splineApp.findObjectByName('wheel');
-    if (!model) return;
+    console.log('Spline scene loaded, finding wheel model...');
+    state.current.application = splineApp;
 
+    const model = splineApp.findObjectByName('wheel');
+    if (!model) {
+      console.warn('Wheel model not found in scene');
+      return;
+    }
+
+    console.log('Wheel model found, initializing...');
     state.current.model = model;
 
     // Initialize mouse position to center on load
@@ -65,8 +75,27 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
 
     startAnimation();
 
-    window.parent.postMessage({ type: 'WHEEL_IFRAME_READY' }, '*');
+    // Signal that the wheel is ready
+    window.parent.postMessage(
+      {
+        type: 'WHEEL_IFRAME_READY',
+        modelName: 'wheel',
+        timestamp: new Date().getTime()
+      },
+      '*'
+    );
+
+    // Mark as loaded and notify parent component
+    setIsLoaded(true);
   };
+
+  // When loading state changes, notify parent through callback
+  useEffect(() => {
+    if (isLoaded && onSceneReady) {
+      console.log('Scene fully initialized, notifying parent component');
+      onSceneReady();
+    }
+  }, [isLoaded, onSceneReady]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -91,6 +120,7 @@ function SceneRenderer({ sceneUrl }: SceneRendererProps) {
       stopAnimation();
       state.current = {
         model: null,
+        application: null,
         animation: null,
         rotation: {
           current: { x: 0, y: 0 },
