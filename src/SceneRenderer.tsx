@@ -139,16 +139,14 @@ function SceneRenderer({ sceneUrl, onSceneReady }: SceneRendererProps) {
         width: '100%',
         height: '100%',
         padding: 0,
-        margin: 0,
-        pointerEvents: isDesktop ? 'none' : 'auto'
+        margin: 0
       }}>
       <Spline
         scene={sceneUrl}
         onLoad={onLoad}
         style={{
           padding: 0,
-          margin: 0,
-          pointerEvents: isDesktop ? 'none' : 'auto'
+          margin: 0
         }}
       />
     </div>

@@ -64,9 +64,6 @@ function App() {
     setIsSceneReady(true);
   };
 
-  // Use media query to determine if it's a desktop device
-  const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-
   return (
     <div
       style={{
@@ -76,7 +73,6 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         background: 'transparent',
-        pointerEvents: isDesktop ? 'none' : 'auto',
         padding: 0,
         overflow: 'hidden'
       }}>
