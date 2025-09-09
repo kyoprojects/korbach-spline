@@ -130,7 +130,29 @@ function SceneRenderer({ sceneUrl, onSceneReady }: SceneRendererProps) {
     };
   }, []);
 
-  return <Spline scene={sceneUrl} onLoad={onLoad} />;
+  // Check if it's a desktop device
+  const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        padding: 0,
+        margin: 0,
+        pointerEvents: isDesktop ? 'none' : 'auto'
+      }}>
+      <Spline
+        scene={sceneUrl}
+        onLoad={onLoad}
+        style={{
+          padding: 0,
+          margin: 0,
+          pointerEvents: isDesktop ? 'none' : 'auto'
+        }}
+      />
+    </div>
+  );
 }
 
 export default SceneRenderer;
